@@ -13,6 +13,7 @@ class Recommender:
         self.movie_data = pd.read_csv( MOVIE_DATA )
         self.movie_ids = pd.read_csv( MOVIE_IDS )
         self.X = np.load( INTERACTION_MATRIX )
+        self.ratings_per_movie = np.sum( self.X > 0, axis=0 )
         print("done")
         
         # glue movie name and year back together for output 
@@ -52,4 +53,4 @@ class Recommender:
         } )
         ibcf_rec = ibcf_rec.merge(self.movie_data, on="movieId")        
         
-        return movie_title, ibcf_rec
+        return movie_title, self.ratings_per_movie[idx], ibcf_rec

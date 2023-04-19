@@ -23,13 +23,20 @@ def serve():
     # fetch movie id and show recommendations
     movie_id = request.args.get("movie_id")
     if movie_id is not None:
-        movie_title, recommender_results = rec.recommend( int(movie_id), k=20 )
+        movie_title, no_ratings, recommender_results = rec.recommend( int(movie_id), k=20 )
         recommender_results.movieTitle = '<a target="_blank" href="' + recommender_results.imdb_url.fillna("") + '">' + recommender_results["movieTitle"] + '</a>'
         recommender_results["Cover"] = '<img src="' + recommender_results.cover_url.fillna("static/blank.png") + '" width=50>'
         recommender_results = recommender_results[["Cover", "movieTitle", "similarity", "genres"]]
         recommender_results.columns = ["Cover", "Title", "Similarity", "Genres"]
         recommender_results.Genres = recommender_results.Genres.str.replace("|", " | ", regex=False)
-        recommender_results = "<h3>Top 20 recommendations for {}</h3>".format( movie_title ) + recommender_results.to_html( header=True, index=False, justify="left", escape=False )
+
+        if no_ratings < 5: 
+            error_msg = "<font color=\"red\">Warning: This movie has been rated only by {} user(s). Inaccurate recommendations might be produced.</font><br><br>".format( no_ratings )
+        else:
+            error_msg = ""
+        
+        recommender_results = error_msg + "<h3>Top 20 recommendations for {}</h3>".format( movie_title ) + recommender_results.to_html( header=True, index=False, justify="left", escape=False )    
+        
     else:
         recommender_results = ""
         

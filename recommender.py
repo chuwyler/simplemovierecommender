@@ -7,15 +7,13 @@ MOVIE_IDS = "data/movie_ids.csv"
 INTERACTION_MATRIX = "data/normalized_interaction_matrix.npy"
 
 class Recommender:
-    def __init__( self, demean=False ):
+    def __init__( self ):
         # load data
         print("Loading data.. ", end="", flush=True)
         self.movie_data = pd.read_csv( MOVIE_DATA )
         self.movie_ids = pd.read_csv( MOVIE_IDS )
         self.X = np.load( INTERACTION_MATRIX )
         self.ratings_per_movie = np.sum( self.X > 0, axis=0 )
-        if demean:
-            self.X = self.X - np.mean(self.X, axis=0)
         print("done")
         
         # glue movie name and year back together for output 
@@ -39,7 +37,9 @@ class Recommender:
         movie_title = self.movie_data.iloc[idx,:].movieTitle
         
         # predict similarities of all movies with this movie
+        if np.any( np.isnan(self.X) ): print("found nas!")
         s = self.X.T.dot( self.X[:,idx] )
+        print( s )
         
         # extract index values of recommended movies by finding k largest values of s
         # (omitting the similarity with the movie itself)

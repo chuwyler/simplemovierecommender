@@ -16,6 +16,7 @@ def serve():
         search_results = rec.find(q, max_results=100)
         search_results['url'] = '<a href="?movie_id=' + search_results.movieId.astype(str) + '">' + search_results.movieTitle + '</a>'
         search_results = search_results.to_html( columns=["url"], header=False, index=False, escape=False )
+        search_results = "The following movies were found. Click on any of them to get recommendations.<br><br>" + search_results
     else:
         search_results = ""
 
@@ -28,7 +29,7 @@ def serve():
         recommender_results = recommender_results[["Cover", "movieTitle", "similarity", "genres"]]
         recommender_results.columns = ["Cover", "Title", "Similarity", "Genres"]
         recommender_results.Genres = recommender_results.Genres.str.replace("|", " | ", regex=False)
-        recommender_results = "<h3>Recommendations for {}</h3>".format( movie_title ) + recommender_results.to_html( header=True, index=False, justify="left", escape=False )
+        recommender_results = "<h3>Top 20 recommendations for {}</h3>".format( movie_title ) + recommender_results.to_html( header=True, index=False, justify="left", escape=False )
     else:
         recommender_results = ""
         

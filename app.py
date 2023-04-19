@@ -2,7 +2,7 @@ from flask import Flask, Response, render_template, request
 
 # import recommender functionality
 from recommender import Recommender
-rec = Recommender()
+rec = Recommender( demean=False )
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2G"H7G8z\n\xec]/' # obviously changed in production webapp..

@@ -7,13 +7,15 @@ MOVIE_IDS = "data/movie_ids.csv"
 INTERACTION_MATRIX = "data/normalized_interaction_matrix.npy"
 
 class Recommender:
-    def __init__( self ):
+    def __init__( self, demean=False ):
         # load data
         print("Loading data.. ", end="", flush=True)
         self.movie_data = pd.read_csv( MOVIE_DATA )
         self.movie_ids = pd.read_csv( MOVIE_IDS )
         self.X = np.load( INTERACTION_MATRIX )
         self.ratings_per_movie = np.sum( self.X > 0, axis=0 )
+        if demean:
+            self.X = self.X - np.mean(self.X, axis=0)
         print("done")
         
         # glue movie name and year back together for output 

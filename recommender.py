@@ -43,7 +43,8 @@ class Recommender:
         
         # extract index values of recommended movies by finding k largest values of s
         # (omitting the similarity with the movie itself)
-        recommended_idx = np.argsort( s )[::-1][1:k+1]
+        s[idx] = 0
+        recommended_idx = np.argsort( s )[::-1][:k]
         
         # convert to movie ids
         recommended_movie_ids = self.movie_ids.movieId[recommended_idx]
